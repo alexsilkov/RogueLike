@@ -5,11 +5,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed;
+    public float TimeBetweenShots;
+    private float shotCounter;
     private Vector2 moveInput;
 
     public Rigidbody2D theRB;
     public Transform gunArm;
     public Animator anim;
+    public GameObject bulletToFire;
+    public Transform firePoint;
+
     private Camera theCam;
 
     void Start()
@@ -43,6 +48,26 @@ public class PlayerController : MonoBehaviour
         Vector2 offset = new Vector2(mousePos.x - screenPoint.x, mousePos.y - screenPoint.y);
         float angle = Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
         gunArm.rotation = Quaternion.Euler(0, 0, angle);
+
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Instantiate(bulletToFire, firePoint.position, firePoint.rotation);
+            shotCounter = TimeBetweenShots;
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            shotCounter -= Time.deltaTime;
+            if (shotCounter <= 0)
+            {
+                Instantiate(bulletToFire, firePoint.position, firePoint.rotation);
+                shotCounter = TimeBetweenShots;
+            }
+        }
+
+
+
 
         if (moveInput != Vector2.zero)
         {
